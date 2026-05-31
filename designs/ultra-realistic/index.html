@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ultra Realistic Card</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --bg-color: #020305;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            padding: 24px;
+        }
+
+        .card-scale {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 100%;
+        }
+
+        .background-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, rgba(124, 58, 237, 0.1) 0%, transparent 60%);
+            z-index: -1;
+        }
+
+        .card-container {
+            position: relative;
+            width: 380px;
+            min-height: 520px;
+            max-width: 100%;
+            padding: 40px;
+            border-radius: 40px;
+            /* Solid-tint base so the card never collapses to invisible when
+               backdrop-filter is unsupported (Quick Look / WhatsApp preview). */
+            background-color: rgba(20, 22, 32, 0.85);
+            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+            -webkit-backdrop-filter: blur(40px);
+            backdrop-filter: blur(40px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow: hidden;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+        }
+
+        /* When the engine actually supports backdrop blur, drop the opaque
+           tint back down so the original translucent look is preserved. */
+        @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+            .card-container {
+                background-color: rgba(255, 255, 255, 0.02);
+            }
+        }
+
+        /* Top Left Striking Light & Corner Reflections */
+        .card-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 40px;
+            padding: 1.8px;
+            /* Fallback hairline border so the framed-edge reading survives
+               on engines that drop the mask-composite cut-out. */
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.95) 0%,
+                rgba(255, 255, 255, 0.2) 15%,
+                transparent 45%,
+                rgba(192, 132, 252, 0.1) 60%,
+                rgba(255, 255, 255, 0.4) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Where the mask cut-out is honored, remove the fallback border so the
+           original gradient edge is the only visible frame. */
+        @supports ((-webkit-mask-composite: xor) or (mask-composite: exclude)) {
+            .card-container::before { border: none; }
+        }
+
+        .top-glow-streak {
+            position: absolute;
+            top: -20px;
+            left: -10%;
+            width: 140%;
+            height: 160px;
+            background: linear-gradient(110deg, 
+                rgba(147, 197, 253, 0.4) 0%, 
+                rgba(147, 197, 253, 0.1) 30%, 
+                transparent 60%);
+            filter: blur(35px);
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: -1;
+            transform: rotate(-3deg);
+        }
+
+        .card-glow-mesh {
+            position: absolute;
+            bottom: -50px;
+            left: -20%;
+            width: 140%;
+            height: 380px;
+            background: 
+                radial-gradient(circle at 10% 90%, #ffffff 0%, transparent 20%),
+                radial-gradient(circle at 5% 70%, #e879f9 0%, transparent 40%),
+                radial-gradient(circle at 50% 95%, #a855f7 0%, transparent 50%),
+                radial-gradient(circle at 90% 90%, #6366f1 0%, transparent 40%);
+            filter: blur(40px);
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: -1;
+            mix-blend-mode: screen;
+        }
+
+        .icon-wrapper {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #42527a 0%, #11141d 100%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 60px;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Top-left striking light for the button */
+        .icon-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            padding: 1.5px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, transparent 60%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 24px;
+            line-height: 1.1;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+        .view-details {
+            display: inline-flex;
+            align-items: center;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            margin-top: auto;
+        }
+
+        .view-details:hover {
+            opacity: 0.8;
+        }
+
+        .view-details i,
+        .view-details .svg-icon {
+            margin-left: 8px;
+            font-size: 12px;
+            transform: rotate(-45deg);
+        }
+
+        /* Inline SVG icons inherit text color and scale with font-size. */
+        .svg-icon {
+            width: 1em;
+            height: 1em;
+            display: inline-block;
+            fill: currentColor;
+            color: currentColor;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+
+        /* Scale the whole card down on narrow viewports so it never overflows
+           or zooms past the screen in preview engines, while keeping its
+           proportions and design exactly intact. */
+        @media (max-width: 440px) {
+            .card-scale {
+                transform: scale(calc((100vw - 32px) / 380));
+                transform-origin: center center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="background-glow"></div>
+<div class="card-scale">
+<div class="card-container">
+<div class="top-glow-streak"></div>
+<div class="card-glow-mesh"></div>
+<div class="icon-wrapper">
+<!-- Icon placeholder as requested -->
+</div>
+<h2>Örnektir</h2>
+<p>Örnektir örnektir örnektir örnektir örnektir örnektir örnektir örnektir.</p>
+<a class="view-details" href="#">
+            Örnektir <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Tasarım Galerisi</title>
+<style>
+  :root {
+    --bg: #0b0b0d;
+    --bg-soft: #141417;
+    --line: rgba(255,255,255,0.08);
+    --line-strong: rgba(255,255,255,0.16);
+    --text: #f4f4f5;
+    --text-dim: #9a9aa3;
+    --accent: #b7ff3a;
+    --radius: 20px;
+    --shadow: 0 20px 50px rgba(0,0,0,0.55);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(120,90,255,0.10), transparent 42%),
+      radial-gradient(circle at 90% 8%, rgba(183,255,58,0.08), transparent 40%);
+  }
+
+  header {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 24px 28px;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text-dim);
+    border: 1px solid var(--line);
+    border-radius: 999px; padding: 6px 14px;
+    margin-bottom: 22px;
+  }
+  .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+  h1 {
+    font-size: clamp(2.4rem, 1.4rem + 4vw, 4.2rem);
+    line-height: 1.02; font-weight: 700; letter-spacing: -0.03em;
+    margin-bottom: 16px;
+  }
+  h1 .muted { color: var(--text-dim); }
+  .lead {
+    max-width: 560px; color: var(--text-dim);
+    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.15rem); line-height: 1.6;
+  }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 22px; margin-top: 28px; }
+  .meta { display:flex; flex-direction:column; gap: 2px; }
+  .meta b { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+  .meta span { font-size: 0.8rem; color: var(--text-dim); letter-spacing: 0.04em; }
+
+  .filters {
+    max-width: 1200px; margin: 0 auto; padding: 8px 24px 8px;
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .chip {
+    font: inherit; font-size: 0.86rem; color: var(--text-dim);
+    background: var(--bg-soft); border: 1px solid var(--line);
+    border-radius: 999px; padding: 8px 16px; cursor: pointer;
+    transition: color .18s ease, border-color .18s ease, background .18s ease;
+  }
+  .chip:hover { color: var(--text); border-color: var(--line-strong); }
+  .chip[aria-pressed="true"] { color: #0b0b0d; background: var(--accent); border-color: var(--accent); font-weight: 600; }
+
+  .grid {
+    max-width: 1200px; margin: 0 auto; padding: 26px 24px 90px;
+    display: grid; gap: 22px;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  }
+  .card {
+    position: relative;
+    display: flex; flex-direction: column;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    text-decoration: none; color: inherit;
+    transition: transform .22s cubic-bezier(.16,1,.3,1), border-color .22s ease, box-shadow .22s ease;
+  }
+  .card:hover { transform: translateY(-6px); border-color: var(--line-strong); box-shadow: var(--shadow); }
+  .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .preview {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: #000;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+  /* iframe canlı önizleme: küçültülmüş, tıklama kartın kendisine gider */
+  .preview iframe {
+    position: absolute; top: 0; left: 0;
+    width: 1280px; height: 960px;
+    border: 0;
+    transform: scale(0.2266);          /* 290px ~ 1280*0.2266 */
+    transform-origin: top left;
+    pointer-events: none;
+    background: #000;
+  }
+  .preview .scrim {
+    position: absolute; inset: 0; z-index: 2;
+    background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.28));
+    pointer-events: none;
+  }
+  .badge {
+    position: absolute; top: 12px; left: 12px; z-index: 3;
+    font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text); background: rgba(0,0,0,0.5);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    border: 1px solid var(--line-strong);
+    border-radius: 999px; padding: 5px 11px;
+  }
+  .card-body { display:flex; align-items:center; justify-content:space-between; gap: 12px; padding: 16px 18px; }
+  .card-title { font-size: 1.02rem; font-weight: 600; letter-spacing: -0.01em; }
+  .card-sub { font-size: 0.8rem; color: var(--text-dim); margin-top: 3px; }
+  .go {
+    flex: none; width: 34px; height: 34px; border-radius: 50%;
+    display: grid; place-items: center;
+    border: 1px solid var(--line-strong); color: var(--text-dim);
+    transition: background .18s ease, color .18s ease, border-color .18s ease, transform .18s ease;
+  }
+  .card:hover .go { background: var(--accent); color: #0b0b0d; border-color: var(--accent); transform: translateX(2px); }
+  .go svg { width: 16px; height: 16px; }
+
+  footer {
+    max-width: 1200px; margin: 0 auto; padding: 0 24px 60px;
+    color: var(--text-dim); font-size: 0.84rem;
+    border-top: 1px solid var(--line); padding-top: 26px;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap: 10px;
+  }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+  <header>
+    <span class="eyebrow"><span class="dot"></span>Tasarım Koleksiyonu</span>
+    <h1>UI Asset Galerisi<br><span class="muted">tek bir yerde.</span></h1>
+    <p class="lead">Tüm arayüz tasarımları canlı önizlemeyle. Bir karta dokun, tasarımın tam sürümüne git — etkileşimler ve animasyonlar dahil.</p>
+    <div class="meta-row">
+      <div class="meta"><b id="countTotal">0</b><span>TASARIM</span></div>
+      <div class="meta"><b id="countCat">0</b><span>KATEGORİ</span></div>
+      <div class="meta"><b>100%</b><span>WEBKIT UYUMLU</span></div>
+    </div>
+  </header>
+
+  <nav class="filters" id="filters" aria-label="Kategori filtreleri"></nav>
+  <main class="grid" id="grid"></main>
+
+  <footer>
+    <span>Her tasarım kendi sayfasında tam çalışır.</span>
+    <span>Safari · WhatsApp önizleme · iPhone · Chrome</span>
+  </footer>
+
+<script>
+  const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>';
+  const CAT_LABEL = { all:'Tümü', card:'Kartlar', modal:'Modal', interactive:'Etkileşimli', hourglass:'Kum Saati' };
+
+  const ITEMS = [
+    { slug: 'fast-integration', title: 'Fast Integration', cat: 'card' },
+    { slug: 'ultra-realistic', title: 'Ultra Realistic', cat: 'card' },
+    { slug: 'feedback', title: 'Feedback', cat: 'card' },
+    { slug: 'view-collection', title: 'View Collection', cat: 'card' },
+    { slug: 'upgrade-lock', title: 'Upgrade Lock', cat: 'modal' },
+    { slug: 'barrow', title: 'Barrow Collection', cat: 'interactive' },
+    { slug: 'profile', title: 'Profile', cat: 'card' },
+    { slug: 'hourglass-top-less', title: 'Kum Saati — Üst Az', cat: 'hourglass' },
+    { slug: 'hourglass-top-empty', title: 'Kum Saati — Üst Boş', cat: 'hourglass' },
+    { slug: 'hourglass-top-full', title: 'Kum Saati — Üst Dolu', cat: 'hourglass' },
+    { slug: 'hourglass-equal', title: 'Kum Saati — Eşit', cat: 'hourglass' },
+    { slug: 'hourglass-pouring', title: 'Kum Saati — Dökülen', cat: 'hourglass' },
+  ];
+
+  Promise.resolve(ITEMS)
+    .then(items => {
+      const grid = document.getElementById('grid');
+      const filters = document.getElementById('filters');
+      const cats = ['all', ...Array.from(new Set(items.map(i => i.cat)))];
+
+      document.getElementById('countTotal').textContent = items.length;
+      document.getElementById('countCat').textContent = cats.length - 1;
+
+      cats.forEach((c, idx) => {
+        const b = document.createElement('button');
+        b.className = 'chip'; b.textContent = CAT_LABEL[c] || c;
+        b.setAttribute('aria-pressed', idx === 0 ? 'true' : 'false');
+        b.dataset.cat = c;
+        b.onclick = () => {
+          filters.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed','false'));
+          b.setAttribute('aria-pressed','true');
+          grid.querySelectorAll('.card').forEach(card => {
+            card.classList.toggle('hidden', c !== 'all' && card.dataset.cat !== c);
+          });
+        };
+        filters.appendChild(b);
+      });
+
+      items.forEach(it => {
+        const a = document.createElement('a');
+        a.className = 'card'; a.dataset.cat = it.cat;
+        a.href = './designs/' + it.slug + '/index.html';
+        a.innerHTML =
+          '<div class="preview">' +
+            '<span class="badge">' + (CAT_LABEL[it.cat] || it.cat) + '</span>' +
+            '<div class="scrim"></div>' +
+            '<iframe loading="lazy" scrolling="no" tabindex="-1" title="' + it.title + '" src="./designs/' + it.slug + '/index.html"></iframe>' +
+          '</div>' +
+          '<div class="card-body">' +
+            '<div><div class="card-title">' + it.title + '</div><div class="card-sub">' + it.slug + '</div></div>' +
+            '<span class="go">' + ARROW + '</span>' +
+          '</div>';
+        grid.appendChild(a);
+      });
+    })
+    .catch(err => {
+      document.getElementById('grid').innerHTML =
+        '<p style="color:#9a9aa3">Manifest yüklenemedi: ' + err + '</p>';
+    });
+</script>
+</body>
+</html>

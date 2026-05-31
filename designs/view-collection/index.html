@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>View Collection Card</title>
+<style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      overflow: hidden;
+      background: #f7f7f5;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    }
+
+    .page {
+      width: 100vw;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.72) 0 36%, rgba(247, 247, 245, 0.98) 68%, #f6f6f4 100%);
+    }
+
+    /* Scalable wrapper: keeps the card at its native 526x542 design geometry but
+       shrinks the whole composition proportionally on narrow screens so WebKit
+       previews (Quick Look / WhatsApp / Safari) and phones don't over-zoom or
+       clip. The card's internal layout stays pixel-identical — only the entire
+       composition is scaled. .stage reserves the correctly scaled flow height
+       via aspect-ratio so centering never breaks; .scaler fills it using
+       container-relative units. */
+    .stage {
+      width: 526px;
+      max-width: 100%;
+      aspect-ratio: 526 / 542;
+      container-type: inline-size;
+    }
+
+    .scaler {
+      width: 526px;
+      height: 542px;
+      transform-origin: top left;
+      transform: scale(min(1, 100cqw / 526));
+    }
+
+    .card {
+      position: relative;
+      width: 526px;
+      height: 542px;
+      overflow: hidden;
+      border-radius: 24px;
+      transform: perspective(1200px) translate(8px, 3px) rotateX(3deg) rotateY(-3deg);
+      background: #020303;
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.9),
+        0 0 0 2px rgba(255, 255, 255, 0.15),
+        8px 12px 20px -5px rgba(0, 0, 0, 0.4),
+        15px 25px 40px -10px rgba(0, 0, 0, 0.5),
+        25px 45px 70px -15px rgba(0, 0, 0, 0.65),
+        40px 70px 110px -20px rgba(0, 0, 0, 0.6);
+    }
+
+    /* 3D Bevel, Edge Lighting & Global Specular Highlight for Hyper-realism */
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      z-index: 20;
+      box-shadow:
+        inset 1.5px 1.5px 3px rgba(255, 255, 255, 0.8),
+        inset -1.5px -1.5px 3px rgba(0, 0, 0, 0.9),
+        inset 4px 6px 12px rgba(255, 255, 255, 0.3),
+        inset -4px -6px 12px rgba(0, 0, 0, 0.8),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.5) 0%, transparent 20%),
+        radial-gradient(circle at 100% 100%, rgba(0, 0, 0, 0.9) 0%, transparent 20%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.08) 15%, transparent 35%, transparent 65%, rgba(0, 0, 0, 0.6) 85%, rgba(0, 0, 0, 0.95) 100%);
+    }
+
+    /* scene background behind the cards (unchanged) */
+    .color-field {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        radial-gradient(circle at 92% 4%, rgba(56, 178, 85, 0.58), rgba(21, 89, 61, 0.28) 26%, transparent 47%),
+        radial-gradient(circle at 93% 48%, rgba(55, 85, 183, 0.78), rgba(12, 31, 78, 0.55) 33%, transparent 56%),
+        linear-gradient(132deg, transparent 0 39%, #0c2226 50%, #103a34 66%, #0a1639 100%);
+    }
+
+    /* ===== the three cards — UNCHANGED geometry/colour. Shared rules so the
+       blurred copy behind the glass is pixel-identical in position/size/colour ===== */
+    .slab {
+      position: absolute;
+      top: 47px;
+      right: 104px;
+      width: 163px;
+      height: 236px;
+      border: 5px solid #050912;
+      border-radius: 17px;
+      background: linear-gradient(142deg, #d8e8e9 0%, #b0c7d2 48%, #8fa5b4 100%);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.34);
+    }
+
+    .phone {
+      position: absolute;
+      border: 5px solid #050913;
+      box-shadow:
+        0 5px 13px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .phone.green {
+      top: 49px;
+      right: 24px;
+      width: 174px;
+      height: 207px;
+      border-radius: 31px;
+      transform: rotate(20deg);
+      background:
+        radial-gradient(circle at 70% 22%, rgba(255, 255, 255, 0.22), transparent 27%),
+        linear-gradient(138deg, #b8f1a6 0%, #a9ed98 42%, #91d981 100%);
+    }
+
+    .phone.blue {
+      top: 139px;
+      right: 7px;
+      width: 146px;
+      height: 183px;
+      border-radius: 30px;
+      transform: rotate(-1deg);
+      background:
+        radial-gradient(circle at 40% 18%, rgba(255, 255, 255, 0.27), transparent 30%),
+        linear-gradient(140deg, #92bbff 0%, #86affb 50%, #7199e5 100%);
+    }
+
+    .phone.blue::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 25px;
+      background: linear-gradient(145deg, transparent 0 62%, rgba(25, 45, 112, 0.18) 100%);
+    }
+
+    /* crisp cards (visible in the un-covered top-right triangle) */
+    .cards { position: absolute; inset: 0; z-index: 3; }
+
+    /* ===== opaque black cover. Top-right triangle clipped away so the crisp
+       cards stay fully visible & untouched there ===== */
+    .black-cover {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      -webkit-clip-path: polygon(0 0, 43.1% 0, 100% 53.6%, 100% 100%, 0 100%);
+      clip-path: polygon(0 0, 43.1% 0, 100% 53.6%, 100% 100%, 0 100%);
+      background: linear-gradient(180deg, #050607 0%, #010101 58%, #000 100%);
+    }
+
+    /* ===== THE FIX: a blurred, darkened COPY of the same three cards, clipped to
+       the exact glass region (same polygon as the cover). Because it is the very
+       same geometry, the colours that bleed through the frosted glass now sit at
+       the cards' true position / size / colour — no more stray blobs in the middle.
+       It is layered ABOVE the black cover, so it reads as the cards seen THROUGH
+       the dark frosted glass. The crisp top-right cards are not affected. ===== */
+    .glass-reflection {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      -webkit-clip-path: polygon(0 0, 43.1% 0, 100% 53.6%, 100% 100%, 0 100%);
+      clip-path: polygon(0 0, 43.1% 0, 100% 53.6%, 100% 100%, 0 100%);
+      -webkit-filter: blur(18px) brightness(0.5) saturate(1.05);
+      filter: blur(18px) brightness(0.5) saturate(1.05);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    /* the white/silver slab is light, so through the blur it blooms too large &
+       bright. Shrink + dim ONLY its behind-glass copy so it reads at the correct
+       scale. The crisp visible slab is untouched. */
+    .glass-reflection .slab {
+      width: 145px;
+      height: 178px;
+      opacity: 0.82;
+    }
+
+    /* soft light along the diagonal seam */
+    .seam {
+      position: absolute;
+      inset: 0;
+      z-index: 7;
+      pointer-events: none;
+      background:
+        linear-gradient(126deg, transparent 0 45.5%, rgba(255, 255, 255, 0.05) 49%, rgba(130, 162, 178, 0.12) 52%, transparent 60%);
+    }
+
+    .label {
+      position: absolute;
+      z-index: 8;
+      left: 292px;
+      top: 109px;
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.35px;
+      white-space: nowrap;
+      transform: rotate(45deg);
+      transform-origin: left center;
+      text-shadow: 0 0 12px rgba(194, 222, 255, 0.22);
+    }
+
+    .bottom-depth {
+      position: absolute;
+      inset: auto 0 0 0;
+      z-index: 7;
+      height: 170px;
+      background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.34) 100%);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+<main aria-label="View Collection" class="page">
+<div class="stage">
+<div class="scaler">
+<section class="card">
+<div class="color-field"></div>
+<!-- crisp cards (top-right, visible through the clipped corner) -->
+<div class="cards">
+<div class="slab"></div>
+<div class="phone green"></div>
+<div class="phone blue"></div>
+</div>
+<!-- opaque frosted-black glass over the rest -->
+<div class="black-cover"></div>
+<!-- blurred copy of the SAME cards, seen through the glass (the fix) -->
+<div class="glass-reflection">
+<div class="slab"></div>
+<div class="phone green"></div>
+<div class="phone blue"></div>
+</div>
+<div class="seam"></div>
+<div class="label">View Collection</div>
+<div class="bottom-depth"></div>
+</section>
+</div>
+</div>
+</main>
+</body>
+</html>

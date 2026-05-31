@@ -1,0 +1,74 @@
+[
+  {
+    "slug": "fast-integration",
+    "title": "Fast Integration",
+    "cat": "card",
+    "src": "Öğelerle Yeni Klasör 2/index.html"
+  },
+  {
+    "slug": "ultra-realistic",
+    "title": "Ultra Realistic",
+    "cat": "card",
+    "src": "Öğelerle Yeni Klasör 3/index.html"
+  },
+  {
+    "slug": "feedback",
+    "title": "Feedback",
+    "cat": "card",
+    "src": "Öğelerle Yeni Klasör 4/index.html"
+  },
+  {
+    "slug": "view-collection",
+    "title": "View Collection",
+    "cat": "card",
+    "src": "Öğelerle Yeni Klasör 5/index 2.html"
+  },
+  {
+    "slug": "upgrade-lock",
+    "title": "Upgrade Lock",
+    "cat": "modal",
+    "src": "Öğelerle Yeni Klasör 6/index 2.html"
+  },
+  {
+    "slug": "barrow",
+    "title": "Barrow Collection",
+    "cat": "interactive",
+    "src": "Öğelerle Yeni Klasör 7/index.html"
+  },
+  {
+    "slug": "profile",
+    "title": "Profile",
+    "cat": "card",
+    "src": "Öğelerle Yeni Klasör/index.html"
+  },
+  {
+    "slug": "hourglass-top-less",
+    "title": "Kum Saati — Üst Az",
+    "cat": "hourglass",
+    "src": "kum saati/üst kısmı bir tık az kum saati.html"
+  },
+  {
+    "slug": "hourglass-top-empty",
+    "title": "Kum Saati — Üst Boş",
+    "cat": "hourglass",
+    "src": "kum saati/üst kısmı boş kum saati.html"
+  },
+  {
+    "slug": "hourglass-top-full",
+    "title": "Kum Saati — Üst Dolu",
+    "cat": "hourglass",
+    "src": "kum saati/üst kısmı en dolu kum saati.html"
+  },
+  {
+    "slug": "hourglass-equal",
+    "title": "Kum Saati — Eşit",
+    "cat": "hourglass",
+    "src": "kum saati/üst ve alt eşit kum saati.html"
+  },
+  {
+    "slug": "hourglass-pouring",
+    "title": "Kum Saati — Dökülen",
+    "cat": "hourglass",
+    "src": "kum saati/üstü dolu alta biraz dökülmüş kum saati.html"
+  }
+]

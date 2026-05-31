@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Barrow Spring/Summer Collection</title>
+<!-- Google Fonts: Montserrat (for bold background text) and Plus Jakarta Sans (for UI) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<style>
+    /* Global Reset & Theme Variables */
+    :root {
+      --primary-summer-start: #ff5c58;
+      --primary-summer-mid: #ff7f7b;
+      --primary-summer-soft: #fbf1f0;
+      --primary-summer-end: #e1e4e8;
+      
+      --primary-spring-start: #10b981;
+      --primary-spring-mid: #34d399;
+      --primary-spring-soft: #ecfdf5;
+      --primary-spring-end: #d1fae5;
+
+      --accent-yellow: #eaff02;
+      --text-dark: #1a1a1a;
+      --text-muted: #555555;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Inline SVG icon helper: inherits surrounding font-size (1em) and color (currentColor) */
+    .svg-icon {
+      width: 1em;
+      height: 1em;
+      display: inline-block;
+      vertical-align: -0.125em;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #f1f3f6;
+      /* Subtle diagonal studio grid lines to match screenshot background details */
+      background-image: repeating-linear-gradient(45deg, #e4e7ec 0px, #e4e7ec 1px, transparent 1px, transparent 12px);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      padding: 20px;
+    }
+
+    /* Container for layout control (Mockup card + helpful design toggles) */
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    /* Top interactive hint */
+    .hint-badge {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-dark);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+
+    /* WebKit/Quick Look fallback: where backdrop-filter is unsupported (preview engines),
+       keep the badge readable with a near-opaque solid surface instead of see-through glass. */
+    @supports not ((-webkit-backdrop-filter: blur(8px)) or (backdrop-filter: blur(8px))) {
+      .hint-badge {
+        background: rgba(255, 255, 255, 0.97);
+      }
+    }
+    .hint-badge i {
+      color: #ff5c58;
+      animation: pulse 1.5s infinite;
+    }
+
+    /* THE MAIN MOCKUP CARD (Exactly as shown in screenshot) */
+    .mockup-card {
+      position: relative;
+      width: 100%;
+      height: 590px;
+      border-radius: 48px;
+      /* Perfect gradient replica */
+      background: linear-gradient(180deg, var(--primary-summer-start) 0%, var(--primary-summer-mid) 28%, var(--primary-summer-soft) 65%, var(--primary-summer-end) 100%);
+      box-shadow: 
+        0 40px 80px rgba(0, 0, 0, 0.12), 
+        0 15px 30px rgba(0, 0, 0, 0.05),
+        inset 0 -4px 10px rgba(255,255,255,0.4),
+        inset 0 4px 10px rgba(255,255,255,0.2);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 42px 24px 32px 24px;
+      transition: background 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* Spring mode card theme override */
+    .mockup-card.spring-theme {
+      background: linear-gradient(180deg, var(--primary-spring-start) 0%, var(--primary-spring-mid) 28%, var(--primary-spring-soft) 65%, var(--primary-spring-end) 100%);
+    }
+
+    /* Background Watermark Text "BARROW" exactly layered and repeated */
+    .barrow-watermark-container {
+      position: absolute;
+      top: 35px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      pointer-events: none;
+      user-select: none;
+      z-index: 1;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to bottom, black 0%, black 20%, transparent 65%);
+      mask-image: linear-gradient(to bottom, black 0%, black 20%, transparent 65%);
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+    }
+
+    .barrow-watermark {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 84px;
+      line-height: 0.82;
+      letter-spacing: -3px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.04) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: rgba(0,0,0,0.06);
+      transition: opacity 0.5s ease;
+    }
+
+    /* Center Section hosting the circles */
+    .center-stage {
+      position: relative;
+      width: 100%;
+      height: 310px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    /* Hand-drawn sketchy red circle via SVG filter */
+    .sketchy-red-circle {
+      width: 228px;
+      height: 228px;
+      background-color: #ff1212;
+      border-radius: 50%;
+      filter: url(#rough-edge);
+      position: relative;
+      z-index: 3;
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.5s ease;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(255, 18, 18, 0.15);
+    }
+
+    .mockup-card.spring-theme .sketchy-red-circle {
+      background-color: #10b981;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+    }
+
+    .sketchy-red-circle:hover {
+      transform: scale(1.05);
+    }
+
+    /* Pulse wave behind the sketchy circle */
+    .pulse-wave {
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      border: 2px dashed rgba(255, 255, 255, 0.4);
+      z-index: 2;
+      animation: rotate-slow 20s linear infinite;
+      pointer-events: none;
+    }
+
+    /* Left and Right peeking action buttons */
+    .peek-btn {
+      position: absolute;
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      z-index: 4;
+    }
+
+    /* Green flower button (Left) */
+    .btn-green-flower {
+      background-color: #2ece60;
+      left: 62px;
+      bottom: 40px;
+    }
+
+    .btn-green-flower:hover {
+      transform: scale(1.15) rotate(45deg);
+      box-shadow: 0 15px 30px rgba(46, 206, 96, 0.4);
+    }
+
+    /* Active indicator for flower */
+    .btn-green-flower.active {
+      box-shadow: 0 0 0 4px #fff, 0 15px 30px rgba(46, 206, 96, 0.5);
+    }
+
+    /* Pink sun button (Right) */
+    .btn-pink-sun {
+      background-color: #ff5e62;
+      right: 62px;
+      bottom: 40px;
+    }
+
+    .btn-pink-sun:hover {
+      transform: scale(1.15) rotate(-30deg);
+      box-shadow: 0 15px 30px rgba(255, 94, 98, 0.4);
+    }
+
+    /* Active indicator for sun */
+    .btn-pink-sun.active {
+      box-shadow: 0 0 0 4px #fff, 0 15px 30px rgba(255, 94, 98, 0.5);
+    }
+
+    /* Icons inside buttons */
+    .peek-btn svg {
+      transition: transform 0.3s ease;
+    }
+    .peek-btn:hover svg {
+      transform: scale(1.1);
+    }
+
+    /* Bottom Text Area */
+    .bottom-info-block {
+      text-align: center;
+      z-index: 2;
+      margin-bottom: 20px;
+      max-width: 90%;
+    }
+
+    .main-description {
+      font-size: 15.5px;
+      font-weight: 500;
+      line-height: 1.55;
+      color: var(--text-dark);
+      margin: 0;
+      letter-spacing: -0.15px;
+      opacity: 0.95;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+
+    /* The Yellow Explore Button */
+    .explore-action-button {
+      background-color: var(--accent-yellow);
+      border: none;
+      border-radius: 40px;
+      padding: 8px 8px 8px 26px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 10px 25px rgba(234, 255, 2, 0.35);
+      z-index: 5;
+      outline: none;
+    }
+
+    .explore-action-button span {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #000000;
+      letter-spacing: -0.2px;
+    }
+
+    /* Arrow circle inside button */
+    .arrow-container {
+      width: 38px;
+      height: 38px;
+      background-color: rgba(0, 0, 0, 0.08);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .explore-action-button:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 15px 30px rgba(234, 255, 2, 0.5);
+    }
+
+    .explore-action-button:hover .arrow-container {
+      transform: translateX(4px);
+      background-color: rgba(0, 0, 0, 0.14);
+    }
+
+    .explore-action-button:active {
+      transform: translateY(-1px) scale(0.98);
+    }
+
+
+    /* INTERACTIVE CATALOG DRAWER (Slides up beautifully inside card) */
+    .catalog-drawer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: #ffffff;
+      border-radius: 44px 44px 0 0;
+      z-index: 10;
+      transform: translateY(100%);
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 -20px 50px rgba(0,0,0,0.15);
+    }
+
+    .catalog-drawer.open {
+      transform: translateY(0);
+    }
+
+    /* Drawer Header */
+    .drawer-header {
+      padding: 24px 24px 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #f0f0f0;
+      background: #fafafa;
+      border-radius: 44px 44px 0 0;
+    }
+
+    .drawer-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .drawer-title span.badge {
+      background: #ff1212;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+
+    .close-drawer-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f0f2f5;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-dark);
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .close-drawer-btn:hover {
+      background: #e2e5e9;
+      transform: scale(1.05);
+    }
+
+    /* Catalog content area */
+    .drawer-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background: #fcfcfd;
+    }
+
+    /* Fashion item grid inside catalog */
+    .fashion-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .fashion-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 12px;
+      border: 1px solid #f0f2f5;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .fashion-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.04);
+    }
+
+    /* Interactive image placeholders with stylish geometry */
+    .fashion-image-wrapper {
+      width: 100%;
+      height: 120px;
+      border-radius: 18px;
+      background: #f7eceb;
+      margin-bottom: 12px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .fashion-image-wrapper.mint {
+      background: #e6f9f0;
+    }
+
+    .fashion-image-wrapper.yellow {
+      background: #fffde6;
+    }
+
+    .fashion-image-wrapper.purple {
+      background: #f3efff;
+    }
+
+    /* Graphic pattern in place of unavailable images */
+    .item-graphic {
+      font-size: 38px;
+      color: rgba(0, 0, 0, 0.15);
+      z-index: 2;
+      transition: transform 0.3s ease;
+    }
+
+    .fashion-card:hover .item-graphic {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .item-tag {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-size: 9px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--text-dark);
+      padding: 3px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+    }
+
+    .item-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .item-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-dark);
+      letter-spacing: -0.2px;
+    }
+
+    .item-price {
+      font-size: 14px;
+      font-weight: 800;
+      color: #ff1212;
+    }
+
+    /* Size options list */
+    .size-selector {
+      display: flex;
+      gap: 4px;
+      margin-top: 8px;
+    }
+
+    .size-pill {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 3px 6px;
+      border-radius: 6px;
+      background: #f0f2f5;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .size-pill:hover, .size-pill.active {
+      background: var(--text-dark);
+      color: #fff;
+    }
+
+    /* Quick buy button inside cards */
+    .add-to-bag-btn {
+      margin-top: 10px;
+      background: var(--text-dark);
+      color: #fff;
+      border: none;
+      padding: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .add-to-bag-btn:hover {
+      background: #333;
+    }
+
+    .add-to-bag-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* Checkout Bar floating inside drawer */
+    .drawer-footer {
+      padding: 16px 20px;
+      background: #ffffff;
+      border-top: 1px solid #f0f0f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-summary {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .cart-total-price {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .checkout-btn {
+      background: var(--accent-yellow);
+      color: #000;
+      font-weight: 800;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 20px;
+      font-size: 13.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 4px 12px rgba(234, 255, 2, 0.3);
+    }
+
+    .checkout-btn:hover {
+      background: #d6eb02;
+      transform: translateY(-2px);
+    }
+
+    /* Success Toast Overlay */
+    .toast-notification {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: rgba(0, 0, 0, 0.9);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+    }
+
+    .toast-notification.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Keyframe Animations */
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes rotate-slow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .mockup-card {
+        height: 100vh;
+        max-height: 620px;
+        border-radius: 32px;
+      }
+      .barrow-watermark {
+        font-size: 74px;
+      }
+      .sketchy-red-circle {
+        width: 200px;
+        height: 200px;
+      }
+      .btn-green-flower {
+        left: 45px;
+        bottom: 30px;
+      }
+      .btn-pink-sun {
+        right: 45px;
+        bottom: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- SVG roughness filter container to create EXACT rough circle edge texture -->
+<svg height="0" style="visibility: hidden; position: absolute;" width="0">
+<defs>
+<filter id="rough-edge">
+<feturbulence basefrequency="0.04" numoctaves="3" result="noise" type="fractalNoise"></feturbulence>
+<fedisplacementmap in="SourceGraphic" in2="noise" scale="11" xchannelselector="R" ychannelselector="G"></fedisplacementmap>
+</filter>
+</defs>
+</svg>
+<div class="app-container">
+<!-- MAIN DESIGN CARD -->
+<div class="mockup-card" id="mockupCard">
+<!-- Toast Alert Message inside Card -->
+<div class="toast-notification" id="cartToast">
+<svg class="svg-icon" style="color: #2ece60;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
+<span id="toastText">Örnektir</span>
+</div>
+<!-- Overlapping repeated watermark logo text -->
+<div class="barrow-watermark-container">
+<div class="barrow-watermark">ÖRNEKTİR</div>
+<div class="barrow-watermark">ÖRNEKTİR</div>
+<div class="barrow-watermark">ÖRNEKTİR</div>
+<div class="barrow-watermark">ÖRNEKTİR</div>
+<div class="barrow-watermark">ÖRNEKTİR</div>
+<div class="barrow-watermark">ÖRNEKTİR</div>
+<div class="barrow-watermark">ÖRNEKTİR</div>
+<div class="barrow-watermark">ÖRNEKTİR</div>
+</div>
+<!-- Center Elements Area -->
+<div class="center-stage">
+</div>
+<!-- Description Block with EXACT replica text layout -->
+<div class="bottom-info-block">
+<p class="main-description" id="themeDescription">
+          Örnektir örnektir örnektir örnektir örnektir<br/>
+          Örnektir örnektir örneğidir örnektir
+        </p>
+</div>
+<!-- Primary Explore Button -->
+<button class="explore-action-button" onclick="openDrawer()">
+<span>Örnektir</span>
+<div class="arrow-container">
+<svg fill="none" height="18" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24" width="18">
+<line x1="5" x2="19" y1="12" y2="12"></line>
+<polyline points="12 5 19 12 12 19"></polyline>
+</svg>
+</div>
+</button>
+<!-- INTERACTIVE CATALOG SLIDE-UP DRAWER -->
+<div class="catalog-drawer" id="catalogDrawer">
+<div class="drawer-header">
+<div class="drawer-title">
+<span id="drawerTitleText">Örnektir</span>
+<span class="badge" id="drawerBadge">Örnektir</span>
+</div>
+<button aria-label="Close" class="close-drawer-btn" onclick="closeDrawer()">
+<svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg>
+</button>
+</div>
+<!-- Dynamic Apparel Collection Content -->
+<div class="drawer-content">
+<div class="fashion-grid" id="fashionGrid">
+<!-- Item 1 -->
+<div class="fashion-card">
+<div class="fashion-image-wrapper">
+<span class="item-tag">Örnektir</span>
+</div>
+<div class="item-details">
+<span class="item-name" id="item1Name">Örnektir</span>
+<button class="add-to-bag-btn" onclick="addToBag('Örnektir', 120)">
+                  Örnektir
+                </button>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="fashion-card">
+<div class="fashion-image-wrapper mint">
+<span class="item-tag">Örnektir</span>
+</div>
+<div class="item-details">
+<span class="item-name" id="item2Name">Örnektir</span>
+<button class="add-to-bag-btn" onclick="addToBag('Örnektir', 95)">
+                  Örnektir
+                </button>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="fashion-card">
+<div class="fashion-image-wrapper yellow">
+<span class="item-tag">Örnektir</span>
+</div>
+<div class="item-details">
+<span class="item-name" id="item3Name">Örnektir</span>
+<button class="add-to-bag-btn" onclick="addToBag('Örnektir', 55)">
+                  Örnektir
+                </button>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="fashion-card">
+<div class="fashion-image-wrapper purple">
+<span class="item-tag">Örnektir</span>
+</div>
+<div class="item-details">
+<span class="item-name" id="item4Name">Örnektir</span>
+<button class="add-to-bag-btn" onclick="addToBag('Örnektir', 140)">
+                  Örnektir
+                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Checkout Interactive footer details -->
+<div class="drawer-footer" style="justify-content: flex-end;">
+<button class="checkout-btn" onclick="checkout()">
+            Örnektir <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Business logic Javascript -->
+<script>
+    // State Tracking
+    let activeTheme = 'summer'; 
+    let cart = [];
+    let totalPrice = 0;
+
+    // Dom Selectors
+    const card = document.getElementById('mockupCard');
+    const themeDescription = document.getElementById('themeDescription');
+    const springBtn = document.getElementById('springBtn');
+    const summerBtn = document.getElementById('summerBtn');
+    const mainCircle = document.getElementById('mainCircle');
+    const catalogDrawer = document.getElementById('catalogDrawer');
+    const toast = document.getElementById('cartToast');
+    const toastText = document.getElementById('toastText');
+
+    // Drawer item name elements for customization
+    const item1Name = document.getElementById('item1Name');
+    const item2Name = document.getElementById('item2Name');
+    const item3Name = document.getElementById('item3Name');
+    const item4Name = document.getElementById('item4Name');
+    const drawerTitleText = document.getElementById('drawerTitleText');
+
+    // Switch between Spring (Flower) and Summer (Sun) themes
+    function toggleTheme(theme) {
+      if (theme === activeTheme) return;
+      activeTheme = theme;
+
+      if (theme === 'spring') {
+        card.classList.add('spring-theme');
+        if (springBtn) springBtn.classList.add('active');
+        if (summerBtn) summerBtn.classList.remove('active');
+        
+        // Beautiful Spring-specific text
+        themeDescription.style.transform = 'translateY(10px)';
+        themeDescription.style.opacity = '0';
+        setTimeout(() => {
+          themeDescription.innerHTML = "Örnektir örnektir örnektir örnektir örnektir<br>Örnektir örnektir örneğidir örnektir";
+          themeDescription.style.transform = 'translateY(0)';
+          themeDescription.style.opacity = '1';
+        }, 300);
+
+        // Customize items in catalog for Spring
+        drawerTitleText.innerText = "Örnektir";
+        item1Name.innerText = "Örnektir";
+        item2Name.innerText = "Örnektir";
+        item3Name.innerText = "Örnektir";
+        item4Name.innerText = "Örnektir";
+
+        showToast("Örnektir");
+      } else {
+        card.classList.remove('spring-theme');
+        if (summerBtn) summerBtn.classList.add('active');
+        if (springBtn) springBtn.classList.remove('active');
+
+        // Original Summer Text layout from screenshot
+        themeDescription.style.transform = 'translateY(10px)';
+        themeDescription.style.opacity = '0';
+        setTimeout(() => {
+          themeDescription.innerHTML = "Örnektir örnektir örnektir örnektir örnektir<br>Örnektir örnektir örneğidir örnektir";
+          themeDescription.style.transform = 'translateY(0)';
+          themeDescription.style.opacity = '1';
+        }, 300);
+
+        // Customize items in catalog back to Summer
+        drawerTitleText.innerText = "Örnektir";
+        item1Name.innerText = "Örnektir";
+        item2Name.innerText = "Örnektir";
+        item3Name.innerText = "Örnektir";
+        item4Name.innerText = "Örnektir";
+
+        showToast("Örnektir");
+      }
+    }
+
+    // Dynamic toast notification utility
+    function showToast(message) {
+      toastText.innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    // Interactive circle pulsing interaction
+    function triggerEasterEgg() {
+      if (mainCircle) {
+        mainCircle.style.transform = 'scale(1.15) rotate(10deg)';
+        setTimeout(() => {
+          mainCircle.style.transform = 'scale(1)';
+        }, 400);
+      }
+      showToast("Örnektir");
+    }
+
+    // Open Drawer Slide-up
+    function openDrawer() {
+      catalogDrawer.classList.add('open');
+    }
+
+    // Close Drawer Slide-up
+    function closeDrawer() {
+      catalogDrawer.classList.remove('open');
+    }
+
+    // Add Item to Bag system
+    function addToBag(itemName, price) {
+      cart.push({ name: itemName, price: price });
+      totalPrice += price;
+      
+      showToast("Örnektir");
+    }
+
+    // Checkout modal simulation
+    function checkout() {
+      if (cart.length === 0) {
+        showToast("Örnektir");
+        return;
+      }
+      showToast("Örnektir");
+      cart = [];
+      totalPrice = 0;
+      setTimeout(() => {
+        closeDrawer();
+      }, 1000);
+    }
+
+    // Initialize size selection interactions
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.size-pill').forEach(pill => {
+        pill.addEventListener('click', function() {
+          const siblings = this.parentElement.querySelectorAll('.size-pill');
+          siblings.forEach(s => s.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

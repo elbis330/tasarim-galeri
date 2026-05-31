@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Upgrade Lock Modal</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      min-width: 797px;
+      min-height: 637px;
+      overflow: hidden;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #fff;
+      background:
+        radial-gradient(circle at 20% 11%, rgba(51, 54, 55, 0.38), transparent 33%),
+        radial-gradient(circle at 80% 88%, rgba(17, 16, 18, 0.62), transparent 42%),
+        linear-gradient(180deg, #202424 0%, #1c1e1f 45%, #151617 100%);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    .stage {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 637px;
+    }
+
+    .outer-shell {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      width: 724px;
+      height: 564px;
+      transform: translateX(-50%);
+      border: 2px solid rgba(255, 255, 255, 0.075);
+      border-radius: 30px;
+      background:
+        linear-gradient(180deg, rgba(41, 42, 44, 0.9) 0%, rgba(32, 33, 35, 0.9) 46%, rgba(23, 24, 26, 0.94) 100%);
+      box-shadow:
+        0 24px 48px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.045),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+    }
+
+    .outer-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 50% 44%, rgba(102, 103, 104, 0.15), transparent 39%),
+        radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 0.42), transparent 65%);
+      pointer-events: none;
+    }
+
+    .outer-shell::after {
+      content: "";
+      position: absolute;
+      left: 37px;
+      top: 36px;
+      width: 648px;
+      height: 490px;
+      border-radius: 18px;
+      box-shadow: 0 24px 34px rgba(0, 0, 0, 0.55);
+      pointer-events: none;
+    }
+
+    .dashboard {
+      position: absolute;
+      left: 38px;
+      top: 38px;
+      width: 646px;
+      height: 487px;
+      overflow: hidden;
+      border-radius: 17px;
+      background:
+        linear-gradient(180deg, #393b3c 0%, #383a3a 48%, #343535 100%);
+      z-index: 1;
+    }
+
+    .dashboard::before {
+      content: "";
+      position: absolute;
+      inset: -22px;
+      background:
+        radial-gradient(circle at 10% 15%, rgba(0, 0, 0, 0.46), transparent 12%),
+        radial-gradient(circle at 83% 13%, rgba(180, 205, 193, 0.4), transparent 6%),
+        radial-gradient(circle at 88% 14%, rgba(189, 141, 119, 0.36), transparent 7%),
+        radial-gradient(circle at 94% 13%, rgba(206, 168, 119, 0.28), transparent 6%),
+        radial-gradient(circle at 50% 60%, rgba(255, 255, 255, 0.08), transparent 42%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.07));
+      filter: blur(11px);
+      opacity: 0.85;
+    }
+
+    .ghost {
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(210, 213, 214, 0.18);
+      filter: blur(9px);
+      opacity: 0.95;
+    }
+
+    .ghost.one {
+      left: 17px;
+      top: 160px;
+      width: 226px;
+      height: 24px;
+    }
+
+    .ghost.two {
+      left: 134px;
+      top: 181px;
+      width: 303px;
+      height: 20px;
+      opacity: 0.55;
+    }
+
+    .ghost.three {
+      left: 31px;
+      top: 314px;
+      width: 214px;
+      height: 26px;
+      opacity: 0.47;
+    }
+
+    .ghost.four {
+      left: 367px;
+      top: 351px;
+      width: 180px;
+      height: 24px;
+      opacity: 0.4;
+    }
+
+    .ghost.five {
+      left: 201px;
+      top: 418px;
+      width: 262px;
+      height: 20px;
+      opacity: 0.36;
+    }
+
+    .avatar-haze {
+      position: absolute;
+      left: 44px;
+      top: 46px;
+      width: 90px;
+      height: 70px;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 36% 34%, rgba(148, 149, 149, 0.42), transparent 21%),
+        radial-gradient(circle at 63% 58%, rgba(37, 37, 38, 0.65), transparent 34%);
+      filter: blur(12px);
+      opacity: 0.55;
+    }
+
+    .small-stack {
+      position: absolute;
+      left: 31px;
+      top: 382px;
+      width: 255px;
+      height: 62px;
+      border-radius: 22px;
+      background:
+        repeating-linear-gradient(180deg, rgba(220, 220, 220, 0.15) 0 10px, transparent 10px 22px);
+      filter: blur(11px);
+      opacity: 0.35;
+    }
+
+    .glass-card {
+      position: absolute;
+      left: 38px;
+      top: 38px;
+      width: 646px;
+      height: 487px;
+      overflow: hidden;
+      border: 1px solid rgba(229, 238, 239, 0.58);
+      border-radius: 17px;
+      background: rgba(82, 83, 83, 0.72);
+      backdrop-filter: blur(16px) saturate(105%);
+      -webkit-backdrop-filter: blur(16px) saturate(105%);
+      box-shadow:
+        0 22px 28px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.27);
+      z-index: 2;
+    }
+
+    .glass-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      border-radius: inherit;
+      background:
+        radial-gradient(ellipse at 50% -15%, rgba(255, 255, 255, 0.2), transparent 42%),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.07) 0%, transparent 21%, transparent 79%, rgba(255, 255, 255, 0.075) 100%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(20, 20, 20, 0.05) 100%);
+      pointer-events: none;
+    }
+
+    .glass-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      border-radius: inherit;
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+        inset 0 22px 34px rgba(255, 255, 255, 0.035),
+        inset 0 -28px 44px rgba(0, 0, 0, 0.16);
+      pointer-events: none;
+    }
+
+    .screw {
+      position: absolute;
+      z-index: 5;
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 24%, #ffffff 0 12%, #eceff0 14% 24%, #bfc3c6 37%, #8f9498 55%, #f2f2f2 72%, #8d9295 100%);
+      box-shadow:
+        0 1px 2px rgba(255, 255, 255, 0.45) inset,
+        0 -1px 2px rgba(0, 0, 0, 0.45) inset,
+        0 1px 5px rgba(0, 0, 0, 0.62);
+    }
+
+    .screw::after {
+      content: "";
+      position: absolute;
+      left: 2px;
+      top: 8px;
+      width: 15px;
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(73, 76, 79, 0.8), rgba(255, 255, 255, 0.82), rgba(72, 75, 78, 0.68));
+      transform: rotate(-43deg);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.35) inset;
+    }
+
+    .screw.tl { left: 28px; top: 28px; }
+    .screw.tr { right: 28px; top: 28px; }
+    .screw.bl { left: 28px; bottom: 29px; }
+    .screw.br { right: 28px; bottom: 29px; }
+
+    .content {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      text-align: center;
+    }
+
+    .lock-tile {
+      position: absolute;
+      left: 50%;
+      top: 67px;
+      display: grid;
+      place-items: center;
+      width: 94px;
+      height: 96px;
+      transform: translateX(-50%);
+      border-radius: 15px;
+      background:
+        linear-gradient(135deg, #060a0b 0%, #121617 42%, #3f4040 100%);
+      box-shadow:
+        0 15px 20px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        inset -1px -1px 0 rgba(0, 0, 0, 0.38);
+    }
+
+    .lock-tile::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 80% 18%, rgba(255, 255, 255, 0.18), transparent 38%),
+        radial-gradient(circle at 8% 92%, rgba(0, 0, 0, 0.43), transparent 42%);
+      pointer-events: none;
+    }
+
+    .lock-tile svg {
+      position: relative;
+      z-index: 1;
+      width: 40px;
+      height: 40px;
+      filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.4));
+    }
+
+    h1 {
+      position: absolute;
+      top: 195px;
+      left: 0;
+      width: 100%;
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.18;
+      font-weight: 700;
+      letter-spacing: -0.85px;
+      color: rgba(255, 255, 255, 0.97);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.48);
+    }
+
+    .subtitle {
+      position: absolute;
+      top: 254px;
+      left: 50%;
+      width: 545px;
+      margin: 0;
+      transform: translateX(-50%);
+      font-size: 29px;
+      line-height: 1.43;
+      font-weight: 400;
+      letter-spacing: -0.55px;
+      color: rgba(236, 236, 238, 0.72);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+    }
+
+    .cta {
+      position: absolute;
+      top: 369px;
+      left: 50%;
+      display: block;
+      width: 414px;
+      height: 69px;
+      padding: 2px;
+      transform: translateX(-50%);
+      border-radius: 17px;
+      background:
+        linear-gradient(105deg, rgba(170, 218, 176, 0.98) 0%, rgba(245, 249, 245, 0.94) 28%, rgba(176, 199, 250, 0.98) 72%, rgba(202, 185, 255, 0.98) 100%);
+      box-shadow:
+        0 3px 2px rgba(255, 255, 255, 0.12) inset,
+        0 11px 16px rgba(0, 0, 0, 0.53),
+        0 2px 0 rgba(0, 0, 0, 0.58);
+      text-decoration: none;
+    }
+
+    .cta span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
+      background:
+        radial-gradient(circle at 96% 0%, rgba(115, 120, 130, 0.65), transparent 35%),
+        linear-gradient(90deg, #060909 0%, #0e1010 55%, #4a4b4d 100%);
+      color: #fff;
+      font-size: 29px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.85px;
+      text-shadow: 0 2px 3px rgba(0, 0, 0, 0.56);
+      box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, 0.7),
+        inset 0 2px 0 rgba(255, 255, 255, 0.03);
+    }
+  </style>
+</head>
+<body>
+<main aria-label="Upgrade prompt" class="stage">
+<section class="outer-shell">
+<div aria-hidden="true" class="dashboard">
+<div class="avatar-haze"></div>
+<div class="ghost one"></div>
+<div class="ghost two"></div>
+<div class="ghost three"></div>
+<div class="ghost four"></div>
+<div class="ghost five"></div>
+<div class="small-stack"></div>
+</div>
+<div class="glass-card">
+<span aria-hidden="true" class="screw tl"></span>
+<span aria-hidden="true" class="screw tr"></span>
+<span aria-hidden="true" class="screw bl"></span>
+<span aria-hidden="true" class="screw br"></span>
+<div class="content">
+<div aria-hidden="true" class="lock-tile">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<rect height="22" rx="5" stroke="white" stroke-width="3" width="28" x="10" y="20"></rect>
+<path d="M16 20V14.5C16 10.1 19.6 7 24 7C28.4 7 32 10.1 32 14.5V20" stroke="white" stroke-linecap="round" stroke-width="3"></path>
+<path d="M24 29V34" stroke="white" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+<h1>Örnektir örnektir örnekti</h1>
+<p class="subtitle">Örnektir örnektir örnektir örnektir<br/>örnektir örnektir ör</p>
+<a aria-label="Örnektir örnektir" class="cta" href="#"><span>Örnektir örnektir</span></a>
+</div>
+</div>
+</section>
+</main>
+</body>
+</html>
