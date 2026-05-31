@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="viewport" content="width=404, viewport-fit=cover">
 <title>Fast Integration Process Card</title>
 <style>
         :root {
@@ -20,7 +20,7 @@
         }
 
         html, body {
-            max-width: 100%;
+            
             overflow-x: hidden;
         }
 
@@ -42,7 +42,7 @@
         .card-container {
             position: relative;
             width: 380px;
-            max-width: 100%;
+            
             min-height: 520px;
             border-radius: 40px;
             padding: 45px;
@@ -57,6 +57,10 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            /* Safari/WebKit clip fix: blur'lu/blend'li child'da overflow:hidden
+               kosrleri kirpmaz; clip-path kesin kirpar (yuvarlak kose taspmasini onler) */
+            clip-path: inset(0 round 40px);
+            isolation: isolate;
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
